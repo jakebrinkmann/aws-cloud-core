@@ -13,3 +13,12 @@ cd cdk/
 cdk deploy IamUserWithAccessKey
 cdk destroy --all
 ```
+
+## TODOs
+
+- [ ] Setup s3 bucket for static hosting
+- [ ] Setup DNS rules for websites:
+  - [ ] 4rl0.xyz
+  - [ ] arlobrinkmann.com
+  - [ ] j4ke.xyz
+  - [ ] jakebrinkmann.com
