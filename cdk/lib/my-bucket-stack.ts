@@ -1,8 +1,16 @@
-import { Stack, App, StackProps } from "aws-cdk-lib";
-import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
+import { Stack, App, StackProps, CfnOutput, RemovalPolicy } from "aws-cdk-lib";
+import {
+  BucketAccessControl,
+  BlockPublicAccess,
+  Bucket,
+} from "aws-cdk-lib/aws-s3";
+import { Distribution, OriginAccessIdentity } from "aws-cdk-lib/aws-cloudfront";
+import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 
 export interface MyBucketStackProps extends StackProps {
   bucketName: string;
+  domainName: string;
+  subDomain: string;
 }
 
 export class MyBucketStack extends Stack {
@@ -10,9 +18,25 @@ export class MyBucketStack extends Stack {
   constructor(scope: App, id: string, props: MyBucketStackProps) {
     super(scope, id, props);
 
+    const siteDomain = `${props.subDomain}.${props.domainName}`;
+    new CfnOutput(this, "Website", { value: "https://" + siteDomain });
+
     this.bucket = new Bucket(scope, "Bucket", {
+      accessControl: BucketAccessControl.PRIVATE,
+      publicReadAccess: false,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      bucketName: props.bucketName,
+      bucketName: siteDomain,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+
+    const originAccessIdentity = new OriginAccessIdentity(this, "Origin");
+    this.bucket.grantRead(originAccessIdentity);
+    new Distribution(this, "Distribution", {
+      defaultRootObject: "index.html",
+      domainNames: props.domainNames,
+      defaultBehavior: {
+        origin: new S3Origin(this.bucket, { originAccessIdentity }),
+      },
     });
   }
 }
