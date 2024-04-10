@@ -8,7 +8,6 @@ import { Distribution, OriginAccessIdentity } from "aws-cdk-lib/aws-cloudfront";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 
 export interface MyBucketStackProps extends StackProps {
-  bucketName: string;
   domainName: string;
   subDomain: string;
 }
@@ -21,7 +20,7 @@ export class MyBucketStack extends Stack {
     const siteDomain = `${props.subDomain}.${props.domainName}`;
     new CfnOutput(this, "Website", { value: "https://" + siteDomain });
 
-    this.bucket = new Bucket(scope, "Bucket", {
+    this.bucket = new Bucket(this, "Bucket", {
       accessControl: BucketAccessControl.PRIVATE,
       publicReadAccess: false,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -33,7 +32,7 @@ export class MyBucketStack extends Stack {
     this.bucket.grantRead(originAccessIdentity);
     new Distribution(this, "Distribution", {
       defaultRootObject: "index.html",
-      domainNames: props.domainNames,
+      domainNames: [props.domainName],
       defaultBehavior: {
         origin: new S3Origin(this.bucket, { originAccessIdentity }),
       },

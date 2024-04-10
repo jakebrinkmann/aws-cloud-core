@@ -10,7 +10,8 @@ cloud-nuke aws --region us-east-1 --dry-run
 
 ```sh
 cd cdk/
-cdk deploy IamUserWithAccessKey
+cdk synth
+cdk deploy --all
 cdk destroy --all
 ```
 

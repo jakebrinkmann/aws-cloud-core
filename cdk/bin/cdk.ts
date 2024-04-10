@@ -8,7 +8,19 @@ new IamUserWithAccessKey(app, "IamUserWithAccessKey", {
   userName: process.env.USER || "my-user",
 });
 
-new MyBucketStack(app, "MyBucket", { bucketName: "arlobrinkmann.com" });
-new MyBucketStack(app, "MyBucket", { bucketName: "jakebrinkmann.com" });
-new MyBucketStack(app, "MyBucket", { bucketName: "j4ke.xyz" });
-new MyBucketStack(app, "MyBucket", { bucketName: "4rl0.xyz" });
+new MyBucketStack(app, "ArloWebsiteBucket", {
+  domainName: "arlobrinkmann.com",
+  subDomain: "www",
+});
+// new MyBucketStack(app, "MyWebsiteBucket", {
+//   domainName: "jakebrinkmann.com",
+//   subDomain: "www",
+// });
+new MyBucketStack(app, "MyBlogBucket", {
+  domainName: "j4ke.xyz",
+  subDomain: "blog",
+});
+new MyBucketStack(app, "ArloBlogBucket", {
+  domainName: "4rl0.xyz",
+  subDomain: "blog",
+});
