@@ -1,0 +1,17 @@
+---
+regions:
+  - "global" # This is for all global resource types e.g. IAM
+  - "us-east-1"
+  - "us-east-2"
+  - "us-west-1"
+  - "us-west-2"
+
+account-blocklist:
+  - 1234567890
+
+resource-types:
+  excludes:
+    - OSPackage
+
+accounts:
+  "531737344926":

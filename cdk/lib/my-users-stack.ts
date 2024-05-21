@@ -1,6 +1,13 @@
 import { Stack, StackProps, SecretValue } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { User, Group, AccessKey, ManagedPolicy } from "aws-cdk-lib/aws-iam";
+import {
+  User,
+  Group,
+  AccessKey,
+  ManagedPolicy,
+  Policy,
+  PolicyStatement,
+} from "aws-cdk-lib/aws-iam";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
 
 export interface IamUserWithAccessKeyProps extends StackProps {
@@ -23,10 +30,23 @@ export class IamUserWithAccessKey extends Stack {
         }),
       ],
     });
+    // https://aws.permissions.cloud/managedpolicies/PowerUserAccess
     user.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName(
         props.managedPolicy || "PowerUserAccess",
       ),
+    );
+
+    // add inline policy for aws-nuke
+    user.attachInlinePolicy(
+      new Policy(this, "aws-nuker", {
+        statements: [
+          new PolicyStatement({
+            actions: ["iam:ListAccountAliases"],
+            resources: ["*"],
+          }),
+        ],
+      }),
     );
 
     this.accessKey = new AccessKey(this, "AccessKey", { user });

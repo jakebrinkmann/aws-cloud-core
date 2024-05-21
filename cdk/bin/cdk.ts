@@ -12,10 +12,10 @@ new MyBucketStack(app, "ArloWebsiteBucket", {
   domainName: "arlobrinkmann.com",
   subDomain: "www",
 });
-// new MyBucketStack(app, "MyWebsiteBucket", {
-//   domainName: "jakebrinkmann.com",
-//   subDomain: "www",
-// });
+new MyBucketStack(app, "MyWebsiteBucket", {
+  domainName: "jakebrinkmann.com",
+  subDomain: "www",
+});
 new MyBucketStack(app, "MyBlogBucket", {
   domainName: "j4ke.xyz",
   subDomain: "blog",
