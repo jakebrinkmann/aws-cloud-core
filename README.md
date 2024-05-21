@@ -19,7 +19,7 @@ cdk destroy --all
 ## TODOs
 
 - [ ] Add Budgets and Alerts ($25/mo)
-- [ ] Make IAM users (CloudAdmin, CICD)
+- [ ] Make IAM users (CloudAdmin, CdkBot)
   - [ ] seems secretsmanager isn't free-tier
 - [ ] Setup s3 bucket for static hosting
   - this should happen in another project
