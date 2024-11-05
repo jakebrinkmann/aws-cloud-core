@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "aws-cdk": "^2.165.0"
+  },
+  "scripts": {
+    "cdk:bootstrap": "cdk bootstrap",
+    "cdk:diff": "(cd cdk/ && cdk diff --all)",
+    "cdk:deploy": "(cd cdk/ && cdk deploy --all)",
+    "cdk:destroy": "(cd cdk/ && cdk destroy --all)",
+    "cdk:synth": "(cd cdk/ && cdk synth)",
+    "cdk:watch": "(cd cdk/ && cdk watch)",
+    "nuke": "aws-nuke -c nuke-config.yml --profile default --no-dry-run",
+    "test": "jest"
+  }
+}

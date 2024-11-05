@@ -27,4 +27,4 @@ cdk destroy --all
   - [ ] 4rl0.xyz
   - [ ] arlobrinkmann.com
   - [ ] j4ke.xyz
-  - [ ] jakebrinkmann.com
+  - [x] jakebrinkmann.com <-- use jakebrinkmann.github.io
