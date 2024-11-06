@@ -2,6 +2,10 @@
 
 This is a place to deploy my AWS shared resources.
 
+```bash
+dig _github-pages-challenge-jakebrinkmann.jakebrinkmann.com +nostats +nocomments +nocmd TXT
+```
+
 ## TODOs
 
 - [ ] Add `$$` Budgets and Alerts ($25/mo)
