@@ -2,13 +2,13 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 // import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 // TODO: add HTTP support too
-import { ARecord, AaaaRecord, CnameRecord, RecordTarget, PublicHostedZone } from 'aws-cdk-lib/aws-route53';
+import { ARecord, AaaaRecord, CfnRecordSet, CnameRecord, RecordTarget, PublicHostedZone } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget, Route53RecordTarget } from 'aws-cdk-lib/aws-route53-targets';
 // FIXME: github-pages still reports this isn't configurated correctly
 
 interface GitHubPagesRoute53SetupStackProps extends cdk.StackProps {
   domainName: string;
-  githubPagesDomain: string;
+  githubUsername: string;
 }
 
 // docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site
@@ -29,7 +29,8 @@ export class GitHubPagesRoute53SetupStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: GitHubPagesRoute53SetupStackProps) {
     super(scope, id, props);
 
-    const { domainName, githubPagesDomain } = props;
+    const { domainName, githubUsername } = props;
+    const githubPagesDomain = `${githubUsername}.github.io`
 
     const zone = new PublicHostedZone(this, 'MyHostedZone', {
       zoneName: domainName,
@@ -51,6 +52,15 @@ export class GitHubPagesRoute53SetupStack extends cdk.Stack {
       zone,
       recordName: 'www.' + domainName,
       domainName: githubPagesDomain,
+    });
+
+    // https://github.com/settings/pages_verified_domains
+    new CfnRecordSet(this, 'GithubPagesChallengeTxtRecord', {
+      hostedZoneId: zone.hostedZoneId,
+      name: `_github-pages-challenge-${githubUsername}.${domainName}.`,
+      type: 'TXT',
+      ttl: "300",
+      resourceRecords: ['"e9df02c5acc10c713dc04cba65ccd9"'],
     });
   }
 }

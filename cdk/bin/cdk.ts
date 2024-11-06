@@ -13,6 +13,6 @@ new IamUserWithAccessKey(app, "IamUserWithAccessKey", {
 });
 new GitHubPagesRoute53SetupStack(app, 'GitHubPagesStack', {
   domainName: 'jakebrinkmann.com',
-  githubPagesDomain: 'jakebrinkmann.github.io',
+  githubUsername: 'jakebrinkmann',
   env: envUSA,
 });
