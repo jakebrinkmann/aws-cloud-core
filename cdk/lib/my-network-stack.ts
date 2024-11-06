@@ -35,6 +35,13 @@ export class GitHubPagesRoute53SetupStack extends cdk.Stack {
       zoneName: domainName,
     });
 
+    // Create a Route53 hosted zone to later create DNS records
+    // ⚠️ Manual action required: copy NS records into your domain's name servers
+    new cdk.CfnOutput(this, 'NSRecords', {
+      value: cdk.Fn.join(', ', zone.hostedZoneNameServers!),
+      description: 'Comma-separated list of nameservers for the hosted zone',
+    });
+
     const record = new ARecord(this, 'GitHubPagesARecord', {
       zone,
       recordName: domainName,
