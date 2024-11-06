@@ -1,10 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+// TODO: add HTTPs support too
 // import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
-// TODO: add HTTP support too
-import { ARecord, AaaaRecord, CfnRecordSet, CnameRecord, RecordTarget, PublicHostedZone } from 'aws-cdk-lib/aws-route53';
-import { CloudFrontTarget, Route53RecordTarget } from 'aws-cdk-lib/aws-route53-targets';
-// FIXME: github-pages still reports this isn't configurated correctly
+import { ARecord, AaaaRecord, TxtRecord, CnameRecord, RecordTarget, PublicHostedZone } from 'aws-cdk-lib/aws-route53';
+import { Route53RecordTarget } from 'aws-cdk-lib/aws-route53-targets';
 
 interface GitHubPagesRoute53SetupStackProps extends cdk.StackProps {
   domainName: string;
@@ -30,37 +29,35 @@ export class GitHubPagesRoute53SetupStack extends cdk.Stack {
     super(scope, id, props);
 
     const { domainName, githubUsername } = props;
-    const githubPagesDomain = `${githubUsername}.github.io`
+    // const githubPagesDomain = `${githubUsername}.github.io`
 
     const zone = new PublicHostedZone(this, 'MyHostedZone', {
       zoneName: domainName,
     });
 
-    new ARecord(this, 'GitHubPagesARecord', {
+    const record = new ARecord(this, 'GitHubPagesARecord', {
       zone,
       recordName: domainName,
       target: RecordTarget.fromIpAddresses(...ipv4Addresses),
     });
 
+    new ARecord(this, 'GitHubPagesWwwARecord', {
+      zone,
+      recordName: 'www.' + domainName,
+      target: RecordTarget.fromAlias(new Route53RecordTarget(record))
+    });
+
     new AaaaRecord(this, 'GitHubPagesAaaaRecord', {
       zone,
       recordName: domainName,
-      target: RecordTarget.fromIpAddresses(...ipv6Addresses), // Spread the array
+      target: RecordTarget.fromIpAddresses(...ipv6Addresses),
     });
 
-    new CnameRecord(this, 'GitHubPagesCnameRecord', {
+    new TxtRecord(this, 'GithubVerifiedTxtRecord', {
       zone,
-      recordName: 'www.' + domainName,
-      domainName: githubPagesDomain,
-    });
-
-    // https://github.com/settings/pages_verified_domains
-    new CfnRecordSet(this, 'GithubPagesChallengeTxtRecord', {
-      hostedZoneId: zone.hostedZoneId,
-      name: `_github-pages-challenge-${githubUsername}.${domainName}.`,
-      type: 'TXT',
-      ttl: "300",
-      resourceRecords: ['"e9df02c5acc10c713dc04cba65ccd9"'],
+      recordName: `_github-pages-challenge-${githubUsername}.${domainName}`,
+      ttl: cdk.Duration.minutes(30),
+      values: ['e9df02c5acc10c713dc04cba65ccd9'],
     });
   }
 }
