@@ -1,9 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// TODO: add HTTPs support too
-// import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 import { ARecord, AaaaRecord, TxtRecord, CnameRecord, RecordTarget, PublicHostedZone } from 'aws-cdk-lib/aws-route53';
-import { Route53RecordTarget } from 'aws-cdk-lib/aws-route53-targets';
 
 interface GitHubPagesRoute53SetupStackProps extends cdk.StackProps {
   domainName: string;
@@ -29,7 +26,7 @@ export class GitHubPagesRoute53SetupStack extends cdk.Stack {
     super(scope, id, props);
 
     const { domainName, githubUsername } = props;
-    // const githubPagesDomain = `${githubUsername}.github.io`
+    const githubPagesDomain = `${githubUsername}.github.io`
 
     const zone = new PublicHostedZone(this, 'MyHostedZone', {
       zoneName: domainName,
@@ -39,19 +36,19 @@ export class GitHubPagesRoute53SetupStack extends cdk.Stack {
     // ⚠️ Manual action required: copy NS records into your domain's name servers
     new cdk.CfnOutput(this, 'NSRecords', {
       value: cdk.Fn.join(', ', zone.hostedZoneNameServers!),
-      description: 'Comma-separated list of nameservers for the hosted zone',
+      description: 'Nameservers for the hosted zone',
     });
 
-    const record = new ARecord(this, 'GitHubPagesARecord', {
+    new ARecord(this, 'GitHubPagesARecord', {
       zone,
       recordName: domainName,
       target: RecordTarget.fromIpAddresses(...ipv4Addresses),
     });
 
-    new ARecord(this, 'GitHubPagesWwwARecord', {
+    new CnameRecord(this, 'GitHubPagesCnameRecord', {
       zone,
       recordName: 'www.' + domainName,
-      target: RecordTarget.fromAlias(new Route53RecordTarget(record))
+      domainName: githubPagesDomain,
     });
 
     new AaaaRecord(this, 'GitHubPagesAaaaRecord', {
