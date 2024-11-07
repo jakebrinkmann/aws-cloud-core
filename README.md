@@ -8,7 +8,7 @@ dig _github-pages-challenge-jakebrinkmann.jakebrinkmann.com +nostats +nocomments
 
 ## TODOs
 
-- [ ] Add `$$` Budgets and Alerts ($25/mo)
+- [x] Add `$$` Budgets and Alerts ($25/mo)
 - [ ] Make IAM users (CloudAdmin, CdkBot)
   - [ ] seems secretsmanager isn't free-tier
 - [ ] Setup s3 bucket for static hosting

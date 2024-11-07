@@ -3,7 +3,7 @@
     "aws-cdk": "^2.165.0"
   },
   "scripts": {
-    "cdk:bootstrap": "cdk bootstrap",
+    "cdk:bootstrap": "(cd cdk && cdk bootstrap)",
     "cdk:diff": "(cd cdk/ && cdk diff --all)",
     "cdk:deploy": "(cd cdk/ && cdk deploy --all)",
     "cdk:destroy": "(cd cdk/ && cdk destroy --all)",
